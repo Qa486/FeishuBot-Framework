@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>飞书智能助手 — Feishu Bot Framework</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-light: #818cf8;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --success: #34d399;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 24px; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -50%; left: -20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(79,70,229,0.3) 0%, transparent 70%); pointer-events: none; }
+    .hero::after { content: ''; position: absolute; bottom: -30%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(56,189,248,0.2) 0%, transparent 70%); pointer-events: none; }
+    .hero-badge { display: inline-block; background: rgba(79,70,229,0.2); border: 1px solid rgba(79,70,229,0.4); color: var(--primary-light); padding: 6px 16px; border-radius: 20px; font-size: 13px; margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 800; line-height: 1.1; margin-bottom: 16px; background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero h1 span { background: linear-gradient(135deg, var(--primary-light), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 18px; color: var(--text-muted); max-width: 560px; margin-bottom: 40px; }
+    .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius); font-size: 15px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); }
+    .btn-outline { background: transparent; border: 1px solid var(--surface2); color: var(--text); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Features */
+    .section { padding: 80px 0; }
+    .section-label { color: var(--accent); font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .section-title { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+    .section-sub { color: var(--text-muted); font-size: 16px; margin-bottom: 48px; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .feature-card { background: var(--surface); border: 1px solid var(--surface2); border-radius: var(--radius); padding: 28px; transition: border-color 0.2s; }
+    .feature-card:hover { border-color: var(--primary-light); }
+    .feature-icon { font-size: 32px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 17px; margin-bottom: 8px; }
+    .feature-card p { color: var(--text-muted); font-size: 14px; }
+
+    /* Pricing */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+    .price-card { background: var(--surface); border: 1px solid var(--surface2); border-radius: var(--radius); padding: 36px; position: relative; }
+    .price-card.popular { border-color: var(--primary); box-shadow: 0 0 40px rgba(79,70,229,0.15); }
+    .price-card.popular::before { content: '最受欢迎'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; font-size: 12px; font-weight: 600; padding: 4px 16px; border-radius: 20px; }
+    .price-tier { font-size: 14px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .price-amount { font-size: 48px; font-weight: 800; }
+    .price-amount .currency { font-size: 20px; vertical-align: super; margin-right: 4px; }
+    .price-amount .period { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+    .price-desc { color: var(--text-muted); font-size: 14px; margin: 16px 0 24px; min-height: 42px; }
+    .price-features { list-style: none; margin-bottom: 28px; }
+    .price-features li { padding: 8px 0; font-size: 14px; display: flex; gap: 10px; }
+    .price-features li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; }
+    .price-features li.disabled { color: var(--text-muted); text-decoration: line-through; }
+    .price-features li.disabled::before { content: '✗'; color: var(--text-muted); }
+
+    /* Architecture */
+    .arch-diagram { background: var(--surface); border: 1px solid var(--surface2); border-radius: var(--radius); padding: 40px; text-align: center; margin-top: 40px; }
+    .arch-diagram img { max-width: 100%; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--surface2); padding: 40px 0; text-align: center; color: var(--text-muted); font-size: 14px; }
+    footer a { color: var(--text-muted); }
+    footer a:hover { color: var(--accent); }
+
+    /* How it works steps */
+    .steps { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 32px; margin-top: 40px; }
+    .step { text-align: center; }
+    .step-num { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .step h4 { margin-bottom: 8px; }
+    .step p { color: var(--text-muted); font-size: 14px; }
+
+    @media (max-width: 640px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="hero-badge">🚀 开源 · 可定制 · 面向小企业</div>
+    <h1>飞书智能助手<br><span>Feishu Bot Framework</span></h1>
+    <p>为飞书打造的模块化机器人 SaaS 框架。无需编程基础，点点鼠标即可配置自动回复、定时通知、问卷调查、FAQ 助手和消息转发。</p>
+    <div class="hero-buttons">
+      <a href="#features" class="btn btn-primary">🔧 查看功能</a>
+      <a href="https://github.com/your-repo" class="btn btn-outline">📦 GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="section" id="how">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label">工作原理</div>
+      <div class="section-title">3 步快速上线</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>创建飞书应用</h4>
+        <p>在飞书开放平台创建企业自建应用，获取 App ID 和 Secret</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>配置参数</h4>
+        <p>修改 config_example.yaml，填入凭证并启用所需模块</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>一键部署</h4>
+        <p>Docker 一行命令启动，或手动 pip 安装 + python bot.py</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" id="features">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label">核心功能</div>
+      <div class="section-title">5 大模块，即插即用</div>
+      <p class="section-sub">每个模块独立配置，灵活组合，满足不同业务场景</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔁</div>
+        <h3>🔁 自动回复</h3>
+        <p>基于关键词的自动回复，支持文本、富文本、图片和卡片消息。一键配置，即时生效。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>📅 定时通知</h3>
+        <p>支持 Cron 表达式，可向指定群或用户每天定时推送消息，不遗漏任何重要通知。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>📋 问卷调查</h3>
+        <p>创建投票和问卷，通过飞书卡片发送，实时收集并统计用户反馈。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>💬 FAQ 助手</h3>
+        <p>智能问答引擎，支持模糊匹配和多关键词，可处理文本和富文本提问。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h3>🔄 消息转发</h3>
+        <p>跨群、跨用户消息路由，支持关键词过滤，可用于客服、工单等场景。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🖥️</div>
+        <h3>🖥️ Web 管理后台</h3>
+        <p>可视化配置界面，非技术人员也能轻松管理机器人，无需触碰代码。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label">定价方案</div>
+      <div class="section-title">简单透明的定价</div>
+      <p class="section-sub">开源框架免费使用，托管版享受免运维体验</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Free 免费版</div>
+        <div class="price-amount">¥0<span class="period"> / 永久</span></div>
+        <div class="price-desc">适合个人开发者和技术团队自建</div>
+        <ul class="price-features">
+          <li>1 个机器人实例</li>
+          <li>所有 5 个模块</li>
+          <li>无限规则 / FAQ 条目</li>
+          <li>Docker 部署支持</li>
+          <li>社区技术支持</li>
+          <li class="disabled">托管服务（需自建服务器）</li>
+          <li class="disabled">自定义品牌</li>
+        </ul>
+        <a href="https://github.com/your-repo" class="btn btn-outline btn-full">GitHub 免费下载</a>
+      </div>
+      <div class="price-card popular">
+        <div class="price-tier">Pro 专业版</div>
+        <div class="price-amount"><span class="currency">¥</span>99<span class="period"> / 月</span></div>
+        <div class="price-desc">适合需要免运维托管的小型企业</div>
+        <ul class="price-features">
+          <li>无限机器人实例</li>
+          <li>所有 5 个模块</li>
+          <li>无限规则 / FAQ 条目</li>
+          <li>云端托管，Docker 一键部署</li>
+          <li>专属技术支持（钉钉/飞书群）</li>
+          <li>自定义品牌（Logo、名称）</li>
+          <li>数据统计面板</li>
+        </ul>
+        <a href="#contact" class="btn btn-primary btn-full">联系销售</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Enterprise 定制版</div>
+        <div class="price-amount"><span class="currency">¥</span>定制</div>
+        <div class="price-desc">适合有特殊合规和定制需求的中大型企业</div>
+        <ul class="price-features">
+          <li>私有化部署</li>
+          <li>SSO / LDAP 集成</li>
+          <li>自定义模块开发</li>
+          <li>专属客户成功经理</li>
+          <li>SLA 保障</li>
+          <li>合规咨询</li>
+          <li>现场培训</li>
+        </ul>
+        <a href="#contact" class="btn btn-outline btn-full">联系商务</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section class="section" id="arch">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label">技术架构</div>
+      <div class="section-title">简洁模块化设计</div>
+      <p class="section-sub">Flask + APScheduler + Feishu Open API，易于扩展和维护</p>
+    </div>
+    <div class="arch-diagram">
+      <pre style="font-size:13px;color:var(--text-muted);text-align:left;line-height:1.8;display:inline-block;">
+  ┌──────────────────────────────────────────────────────┐
+  │                  Feishu 开放平台                      │
+  └──────────────┬──────────────────────┬───────────────┘
+                 │ Webhook 事件推送       │ 轮询 / API 调用
+                 ▼                      ▼
+  ┌────────────────────────┐  ┌────────────────────────┐
+  │   Flask Web Server      │  │   FeishuClient         │
+  │   • /webhook/feishu     │◄─►│   • 认证管理            │
+  │   • /dashboard/*       │  │   • 消息发送/接收        │
+  │   • /api/*              │  │   • 文件/图片           │
+  └──────────┬─────────────┘  └────────────────────────┘
+             │
+  ┌──────────┴──────────────────────────────────────────┐
+  │              Bot Core (bot.py)                     │
+  │   • 事件路由 → 分发给各模块                          │
+  │   • 模块生命周期管理                                 │
+  │   • YAML 配置加载                                   │
+  └──────────┬────────┬────────┬────────┬────────────┘
+             │        │        │        │
+  ┌──────────┴─┐ ┌───┴──┐ ┌───┴──┐ ┌───┴──┐ ┌──────────┴─┐
+  │ AutoReply │ │Sched-│ │Survey │ │ FAQ  │ │ Forwarder │
+  │ Module    │ │uler │ │Module │ │Module│ │ Module    │
+  └───────────┘ └─────┘ └──────┘ └──────┘ └────────────┘
+      </pre>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="section" id="contact">
+  <div class="container" style="text-align:center;">
+    <div class="section-label">联系我们</div>
+    <div class="section-title">准备好开始了吗？</div>
+    <p class="section-sub" style="margin-bottom:32px;">扫描下方二维码，或发送邮件至 <a href="mailto:contact@example.com">contact@example.com</a></p>
+    <a href="https://github.com/your-repo" class="btn btn-primary">⭐ 在 GitHub 上 Star</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Feishu Bot Framework · <a href="#">隐私政策</a> · <a href="#">服务条款</a></p>
+    <p style="margin-top:8px;">Made with ❤️ for the Feishu community</p>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
