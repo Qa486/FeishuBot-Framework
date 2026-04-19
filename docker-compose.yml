@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  feishu-bot:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: feishu-bot
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./logs:/app/logs
+    environment:
+      - TZ=Asia/Shanghai
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
