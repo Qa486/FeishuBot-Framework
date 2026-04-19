@@ -1,0 +1,54 @@
+# ============================================================
+# Feishu Bot Framework - Configuration Example
+# Copy this file to config.yaml and fill in your values
+# ============================================================
+
+# ----- Feishu App Credentials -----
+feishu:
+  app_id: "cli_xxxxxxxxxxxxxxxxxx"          # Replace with your Feishu App ID
+  app_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxx"   # Replace with your Feishu App Secret
+  verification_token: "xxxxxxxxxxxx"         # Token from Feishu event subscription
+  encrypt_key: "xxxxxxxxxxxxxxxxxxxxxx"      # AES encrypt key for event encryption
+
+# ----- Server Configuration -----
+server:
+  host: "0.0.0.0"
+  port: 8080
+  debug: false
+
+# ----- Module Settings -----
+# Enable/disable modules here. Set to true to activate.
+modules:
+  auto_reply:
+    enabled: true
+    config_file: "modules/auto_reply/config.yaml"
+
+  scheduler:
+    enabled: true
+    config_file: "modules/scheduler/config.yaml"
+
+  survey:
+    enabled: true
+    config_file: "modules/survey/config.yaml"
+
+  faq:
+    enabled: true
+    config_file: "modules/faq/config.yaml"
+
+  forwarder:
+    enabled: true
+    config_file: "modules/forwarder/config.yaml"
+
+# ----- Dashboard -----
+dashboard:
+  enabled: true
+  username: "admin"          # Dashboard login username
+  password: "change_me_123"  # Dashboard login password
+  secret_key: "your-flask-secret-key-change-in-production"
+
+# ----- Logging -----
+logging:
+  level: "INFO"
+  file: "logs/bot.log"
+  max_bytes: 10485760   # 10 MB
+  backup_count: 5
