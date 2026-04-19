@@ -1,0 +1,38 @@
+# Forwarder Module Configuration
+# Automatically forward messages between channels
+
+rules:
+  - id: "support_to_team"
+    enabled: true
+    source_chat: "oc_support_channel_id"      # Replace with actual source chat ID
+    keywords: []                                # Empty = all messages; or add keywords to filter
+    action: "forward"                           # "forward" = send onward; "filter" = drop
+    forward_to:
+      - id: "oc_team_channel_id"               # Replace with target chat ID
+        type: "chat_id"
+      - id: "ou_leader_open_id"                 # Replace with specific user's open_id
+        type: "open_id"
+
+  - id: "urgent_keywords"
+    enabled: true
+    source_chat: ""                              # Any chat (no specific source)
+    keywords:
+      - "紧急"
+      - "urgent"
+      - "紧急联系"
+    action: "forward"
+    forward_to:
+      - id: "oc_emergency_channel_id"           # Replace with emergency/ops chat
+        type: "chat_id"
+
+  - id: "customer_to_sales"
+    enabled: false
+    source_chat: "oc_customer_inquiry_channel"
+    keywords:
+      - "报价"
+      - "合作"
+      - "商务"
+    action: "forward"
+    forward_to:
+      - id: "oc_sales_channel_id"
+        type: "chat_id"
