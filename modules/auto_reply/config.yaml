@@ -1,0 +1,30 @@
+# Auto Reply Module Configuration
+# Trigger keywords and responses
+
+rules:
+  - keywords:
+      - "你好"
+      - "hello"
+      - "hi"
+    response: "您好！我是您的智能助手，有什么可以帮您的吗？ 😊"
+    response_type: "text"
+    enabled: true
+
+  - keywords:
+      - "帮助"
+      - "help"
+    response: |
+      🤖 可用命令：
+      • 发送"你好" - 测试机器人
+      • 发送"查天气" - 获取天气信息
+      • 发送"问卷" - 参与调查
+      • 发送"FAQ" - 查看常见问题
+    response_type: "text"
+    enabled: true
+
+  - keywords:
+      - "联系方式"
+      - "电话"
+    response: "您可以通过以下方式联系我们：\n📧 邮箱：support@example.com\n📞 电话：400-123-4567"
+    response_type: "text"
+    enabled: true
