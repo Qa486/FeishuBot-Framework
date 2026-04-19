@@ -1,0 +1,30 @@
+# Scheduler Module Configuration
+# Define daily scheduled notifications here
+
+tasks:
+  - id: "morning_greeting"
+    enabled: true
+    cron:
+      hour: 9
+      minute: 0
+    message: "☀️ 早安！新的一天开始了，祝您工作顺利！"
+    target_type: "chat_id"
+    target: "oc_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Replace with your chat ID
+
+  - id: "afternoon_reminder"
+    enabled: true
+    cron:
+      hour: 14
+      minute: 0
+    message: "📋 下午好！别忘了检查今天的待办事项哦～"
+    target_type: "chat_id"
+    target: "oc_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+  - id: "daily_digest"
+    enabled: false
+    cron:
+      hour: 18
+      minute: 0
+    message: "🌙 下班时间到！今日工作日报已生成，请查收。"
+    target_type: "open_id"
+    target: "ou_xxxxxxxxxxxxxxxxxxxxxxxx"  # Replace with specific user open_id
