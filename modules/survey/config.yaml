@@ -1,0 +1,44 @@
+# Survey Module Configuration
+
+surveys:
+  - id: "customer_feedback"
+    enabled: true
+    title: "📋 客户满意度调查"
+    description: "感谢您使用我们的服务，请花30秒完成以下调查："
+    questions:
+      - type: "single"
+        text: "您对本次服务的整体满意度如何？"
+        options:
+          - "非常满意"
+          - "满意"
+          - "一般"
+          - "不满意"
+
+      - type: "single"
+        text: "您会向朋友推荐我们吗？"
+        options:
+          - "一定会"
+          - "可能会"
+          - "不确定"
+          - "不会"
+
+      - type: "multi"
+        text: "您希望我们改进哪些方面？（可多选）"
+        options:
+          - "响应速度"
+          - "服务质量"
+          - "产品价格"
+          - "其他"
+
+  - id: "meeting_poll"
+    enabled: true
+    title: "📅 会议时间投票"
+    description: "请选择您方便的会议时间："
+    questions:
+      - type: "single"
+        text: "本周四下午您更方便哪个时段？"
+        options:
+          - "14:00-15:00"
+          - "15:00-16:00"
+          - "16:00-17:00"
+          - "17:00-18:00"
