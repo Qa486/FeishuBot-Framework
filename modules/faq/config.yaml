@@ -1,0 +1,93 @@
+# FAQ Module Configuration
+
+faqs:
+  - id: "welcome"
+    enabled: true
+    question: "欢迎词"
+    keywords:
+      - "你是谁"
+      - "介绍一下"
+      - "你是干什么的"
+    answer: |
+      👋 您好！我是智能助手，可以为您提供以下服务：
+      
+      📌 **自动问答** — 输入常见问题关键词，即时获取答案
+      📋 **问卷调查** — 发送"问卷"即可参与调查
+      📅 **日程提醒** — 每天定时推送重要通知
+      🔄 **消息转发** — 自动将消息转发到指定群或用户
+      
+      输入"帮助"或"help"查看更多命令！
+    response_type: "text"
+    priority: 10
+
+  - id: "pricing"
+    enabled: true
+    question: "价格相关"
+    keywords:
+      - "价格"
+      - "收费"
+      - "多少钱"
+      - "套餐"
+      - "pricing"
+      - "费用"
+    answer: |
+      💰 **我们的定价方案：**
+
+      **免费版（Free）**
+      • 最多 1 个机器人
+      • 5 个自动回复规则
+      • 每天 10 条定时消息
+      • 基础 FAQ（20 条）
+
+      **专业版（Pro）** ¥99/月
+      • 无限机器人数量
+      • 无限自动回复规则
+      • 无限定时消息
+      • 无限 FAQ 条目
+      • 高级数据分析
+      • 优先客户支持
+
+      如需升级，请联系我们的销售团队！
+    response_type: "text"
+    priority: 5
+
+  - id: "account"
+    enabled: true
+    question: "账号问题"
+    keywords:
+      - "账号"
+      - "登录"
+      - "注册"
+      - "密码"
+      - "忘记密码"
+    answer: |
+      🔐 **账号相关问题：**
+
+      • **注册**：请联系管理员为您创建账号
+      • **忘记密码**：请联系管理员重置
+      • **登录问题**：确认使用的是企业邮箱账号
+
+      如需帮助，请发送邮件至 support@example.com
+    response_type: "text"
+    priority: 5
+
+  - id: "bug_report"
+    enabled: true
+    question: "Bug反馈"
+    keywords:
+      - "bug"
+      - "报错"
+      - "问题"
+      - "故障"
+    answer: |
+      🐛 **问题反馈**
+
+      抱歉给您带来不便！请提供以下信息，我们会尽快处理：
+
+      1. 您的操作步骤
+      2. 截图或错误信息
+      3. 发生时间
+
+      反馈邮箱：support@example.com
+    response_type: "text"
+    priority: 3
